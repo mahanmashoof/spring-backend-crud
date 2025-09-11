@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@CrossOrigin("http://localhost:3000/")
 @RestController
 public class UserController {
     //for injecting the user repo interface
@@ -27,12 +25,12 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    User getUserById(@PathVariable Long id) {
+    User getUserById(@PathVariable int id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @PutMapping("/user/{id}")
-    User updateUser(@RequestBody User newUser, @PathVariable Long id){
+    User updateUser(@RequestBody User newUser, @PathVariable int id){
         return userRepository.findById(id).map(user -> {
             user.setUserName(newUser.getUserName());
             user.setName(newUser.getName());
@@ -42,7 +40,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
-    String deleteUser(@PathVariable Long id) {
+    String deleteUser(@PathVariable int id) {
         if (!userRepository.existsById(id)){
             throw new UserNotFoundException(id);
         }
