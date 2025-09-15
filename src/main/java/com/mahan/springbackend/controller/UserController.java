@@ -1,50 +1,54 @@
 package com.mahan.springbackend.controller;
 
-import com.mahan.springbackend.exception.UserNotFoundException;
+import com.mahan.springbackend.dto.UserDTO;
 import com.mahan.springbackend.model.User;
-import com.mahan.springbackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mahan.springbackend.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
-    //for injecting the user repo interface
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
-    @PostMapping("/user")
-    User newUser(@RequestBody User newUser) {
-        return userRepository.save(newUser);
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/users")
-    List<User> getAllUsers() {
-        return userRepository.findAll();
+    @PostMapping
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO){
+        User user = new User();
+        user.setName(userDTO.getName());
+        user.setUserName(userDTO.getUserName());
+        user.setEmail(userDTO.getEmail());
+        return ResponseEntity.ok(userService.createUser(user));
     }
 
-    @GetMapping("/user/{id}")
-    User getUserById(@PathVariable int id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PutMapping("/user/{id}")
-    User updateUser(@RequestBody User newUser, @PathVariable int id){
-        return userRepository.findById(id).map(user -> {
-            user.setUserName(newUser.getUserName());
-            user.setName(newUser.getName());
-            user.setEmail(newUser.getEmail());
-            return userRepository.save(user);
-        }).orElseThrow(()-> new UserNotFoundException(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable int id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @DeleteMapping("/user/{id}")
-    String deleteUser(@PathVariable int id) {
-        if (!userRepository.existsById(id)){
-            throw new UserNotFoundException(id);
-        }
-        userRepository.deleteById(id);
-        return "User with id " + id + " was deleted";
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable int id, @Valid @RequestBody UserDTO userDTO){
+        User user = new User();
+        user.setName(userDTO.getName());
+        user.setUserName(userDTO.getUserName());
+        user.setEmail(userDTO.getEmail());
+        return ResponseEntity.ok(userService.updateUser(id, user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted");
     }
 }

@@ -15,6 +15,8 @@ public class SpringBackendApplication {
 //model
 //repo
 //connect to db
+//service
+//dto
 //Controller (post, get)
 //exception
 //Controller (put, delete)
