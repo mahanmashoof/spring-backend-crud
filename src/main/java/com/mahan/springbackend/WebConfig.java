@@ -9,6 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    @Value("${local.uri}")
+    private String localUri;
+
+    @Value("${local.build.uri}")
+    private String localBuildUri;
+
     @Value("${client.uri}")
     private String clientUri;
 
@@ -18,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/users/**")
-                        .allowedOrigins(clientUri)
+                        .allowedOrigins(localUri, localBuildUri, clientUri)
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);
