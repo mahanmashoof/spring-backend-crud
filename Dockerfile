@@ -2,6 +2,8 @@
 FROM eclipse-temurin:17-jdk-focal as build
 WORKDIR /app
 COPY . .
+# Add this line to make the Maven Wrapper script executable
+RUN chmod +x ./mvnw
 RUN ./mvnw clean package
 
 # Stage 2: Create the final lightweight image
