@@ -17,17 +17,9 @@ public class WebConfig implements WebMvcConfigurer {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                // Rule 1: For the "/user" endpoint
-                registry.addMapping("/user")
+                registry.addMapping("/api/users/**")
                         .allowedOrigins(clientUri)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Example: different methods
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-
-                // Rule 2: For the "/users" endpoint
-                registry.addMapping("/users")
-                        .allowedOrigins(clientUri)
-                        .allowedMethods("GET")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
